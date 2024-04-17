@@ -30,3 +30,12 @@ export const deleteUser=async(req,res)=>{
         res.status(404).json({message:error.message}); 
     }
 }
+export const getUsers=async(req,res)=>{
+    try {
+        const user= await User.find({_id:req.params.id})
+        res.status(200).json(user); 
+    } catch (error) {
+        res.status(404).json({message:error.message}); 
+    }
+
+}
