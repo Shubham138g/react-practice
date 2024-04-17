@@ -3,8 +3,8 @@ import {addUser,getUser,deleteUser,getUsers} from '../controller/user-controller
 const router=express.Router();
 
 router.post('/add',addUser)
-router.get('/all',getUser)
-router.get('/:id',getUsers)
+router.get('/all',getUsers)
+router.get('/:id',getUser)
 router.delete('/:id',deleteUser)
 
 export default router;
