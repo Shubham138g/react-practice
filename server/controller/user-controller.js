@@ -6,7 +6,7 @@ export const addUser =async (req, res) => {
     const newUser = new User(user);
 
     try {
-     await   newUser.save();
+     await  newUser.save();
      res.status(201).json(newUser);
     } catch (error) {
         res.status(409).json({message:error.message});
@@ -36,5 +36,16 @@ export const getUser=async(req,res)=>{
         res.status(200).json(user); 
     } catch (error) {
         res.status(404).json({message:error.message}); 
+    }
+}
+
+export const editUser=async(req,res)=>{
+    const user=req.body;
+    const editUser=new User(user);
+    try {
+        await User.updateOne({_id:req.params.id},editUser);
+        res.status(201).json(editUser);
+    } catch (error) {
+        res.status(404).json({message:error.message})
     }
 }
