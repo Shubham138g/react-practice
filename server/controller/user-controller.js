@@ -1,5 +1,5 @@
 import User from '../schema/user-schema.js';
-
+import Register from '../schema/registerUser.js';
 
 export const addUser =async (req, res) => {
     const user = req.body;
@@ -8,6 +8,18 @@ export const addUser =async (req, res) => {
     try {
      await  newUser.save();
      res.status(201).json(newUser);
+    } catch (error) {
+        res.status(409).json({message:error.message});
+    }
+}
+
+//register
+export const registerUser=async(req,res)=>{
+    const rUser=req.body;
+    const rNewUser=new Register(rUser);
+    try {
+        await rNewUser.save();
+        res.status(200).json(rNewUser);
     } catch (error) {
         res.status(409).json({message:error.message});
     }
@@ -49,3 +61,4 @@ export const editUser=async(req,res)=>{
         res.status(404).json({message:error.message})
     }
 }
+
