@@ -1,5 +1,6 @@
 import User from '../schema/user-schema.js';
 import Registers from '../schema/registerUser.js';
+import bcrypt from 'bcrypt';
 
 export const addUser =async (req, res) => {
     const user = req.body;
@@ -16,11 +17,22 @@ export const addUser =async (req, res) => {
 //register
 export const registerUser1=async(req,res)=>{
     const rUser=req.body;
-    console.log(rUser);
-    const rNewUser=new Registers(rUser);
+    const {password}=rUser;
     try {
-        await rNewUser.save();
-        res.status(201).json(rNewUser);
+        const check=await Registers.findOne({username:req.body.username});
+        if(check){
+            res.status(409).json({message:"user already exist"})
+            console.log("Username already exist");
+        }
+        else{
+            //hash password
+            const hashPassword=await bcrypt.hash(password,10);
+            rUser.password=hashPassword;
+    
+            const rNewUser=new Registers(rUser);
+            await rNewUser.save();
+            res.status(201).json(rNewUser);
+        }
     } catch (error) {
         res.status(409).json({message:error.message});
     }
@@ -66,3 +78,7 @@ export const editUser=async(req,res)=>{
     }
 }
 
+//login user
+export const loginUser=async(req,res)=>{
+
+}
