@@ -80,5 +80,15 @@ export const editUser=async(req,res)=>{
 
 //login user
 export const loginUser=async(req,res)=>{
-
+    try {
+        //compare password;
+        const check=await Registers.findOne({email:req.body.email});
+        const comparePass=bcrypt.compare(req.body.password,check.password);
+        if(check && comparePass){
+            console.log("user login sucess fully");
+            res.status(200).json({message:"user login successfully"})
+        }
+    } catch (error) {
+        res.status(404).json({message:error.message,message:"user not found"})
+    }
 }
