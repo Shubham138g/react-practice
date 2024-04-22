@@ -1,5 +1,5 @@
 import User from '../schema/user-schema.js';
-import Register from '../schema/registerUser.js';
+import Registers from '../schema/registerUser.js';
 
 export const addUser =async (req, res) => {
     const user = req.body;
@@ -14,17 +14,19 @@ export const addUser =async (req, res) => {
 }
 
 //register
-export const registerUser=async(req,res)=>{
+export const registerUser1=async(req,res)=>{
     const rUser=req.body;
-    const rNewUser=new Register(rUser);
+    console.log(rUser);
+    const rNewUser=new Registers(rUser);
     try {
         await rNewUser.save();
-        res.status(200).json(rNewUser);
+        res.status(201).json(rNewUser);
     } catch (error) {
         res.status(409).json({message:error.message});
     }
 }
 
+//getAllUser
 export const getUsers= async(req,res)=>{
     try {
         const users= await User.find({})
@@ -33,7 +35,7 @@ export const getUsers= async(req,res)=>{
         res.status(404).json({message:error.message});
     }
 }
-
+//delete user
 export const deleteUser=async(req,res)=>{
     try {
         await User.deleteOne({_id:req.params.id});
@@ -42,6 +44,7 @@ export const deleteUser=async(req,res)=>{
         res.status(404).json({message:error.message}); 
     }
 }
+//get single user
 export const getUser=async(req,res)=>{
     try {
         const user= await User.findOne({_id:req.params.id})
@@ -51,6 +54,7 @@ export const getUser=async(req,res)=>{
     }
 }
 
+//edit user
 export const editUser=async(req,res)=>{
     const user=req.body;
     const editUser=new User(user);

@@ -3,12 +3,12 @@ import mongoose from "mongoose";
 
 const  registerUserSchema=mongoose.Schema({
     name:String,
-    username:String,
     email:String,
+    username:String,
     phone:String,
     password:String
 })
 
-const register=mongoose.model("register",registerUserSchema);
+const registers=mongoose.model("register",registerUserSchema);
 
-export default register;
+export default registers;
