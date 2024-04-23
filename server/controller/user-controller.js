@@ -1,6 +1,7 @@
 import User from '../schema/user-schema.js';
 import Registers from '../schema/registerUser.js';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export const addUser =async (req, res) => {
     const user = req.body;
@@ -18,6 +19,7 @@ export const addUser =async (req, res) => {
 export const registerUser1=async(req,res)=>{
     const rUser=req.body;
     const {password}=rUser;
+    const seceret_key="12345432gfdsdfge34r12#@@#$##fgrbvfetgdg";
     try {
         const check=await Registers.findOne({username:req.body.username});
         if(check){
@@ -28,10 +30,10 @@ export const registerUser1=async(req,res)=>{
             //hash password
             const hashPassword=await bcrypt.hash(password,10);
             rUser.password=hashPassword;
-    
+            const token=jwt.sign(rUser,seceret_key);
             const rNewUser=new Registers(rUser);
             await rNewUser.save();
-            res.status(201).json(rNewUser);
+            res.status(201).json(rNewUser,token);
         }
     } catch (error) {
         res.status(409).json({message:error.message});
