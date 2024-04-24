@@ -33,7 +33,7 @@ export const registerUser1=async(req,res)=>{
             const token=jwt.sign(rUser,seceret_key);
             const rNewUser=new Registers(rUser);
             await rNewUser.save();
-            res.status(201).json(rNewUser,token);
+            res.status(201).json(rNewUser);
         }
     } catch (error) {
         res.status(409).json({message:error.message});
@@ -85,12 +85,16 @@ export const loginUser=async(req,res)=>{
     try {
         //compare password;
         const check=await Registers.findOne({email:req.body.email});
-        const comparePass=bcrypt.compare(req.body.password,check.password);
+        const comparePass= bcrypt.compareSync(req.body.password,check.password);
         if(check && comparePass){
             console.log("user login sucess fully");
-            res.status(200).json({message:"user login successfully"})
+            res.status(200).json({message:"user login successfully",success:true})
+        }
+        else{
+            res.json({message:"usernot logging",success:false}) 
+            console.log("user not login");
         }
     } catch (error) {
-        res.status(404).json({message:error.message,message:"user not found"})
+        res.status(404).json({message:error.message,message:"user not found",success:false})
     }
 }
