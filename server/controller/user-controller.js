@@ -19,24 +19,23 @@ export const addUser =async (req, res) => {
 export const registerUser1=async(req,res)=>{
     const rUser=req.body;
     const {password}=rUser;
-    const seceret_key="12345432gfdsdfge34r12#@@#$##fgrbvfetgdg";
+    
     try {
         const check=await Registers.findOne({username:req.body.username});
         if(check){
-            res.status(409).json({message:"user already exist"})
-            console.log("Username already exist");
+            res.status(200).json({message:"User already exist",success:false})
         }
         else{
             //hash password
             const hashPassword=await bcrypt.hash(password,10);
             rUser.password=hashPassword;
-            const token=jwt.sign(rUser,seceret_key);
+            
             const rNewUser=new Registers(rUser);
             await rNewUser.save();
-            res.status(201).json(rNewUser);
+            res.status(201).json({rNewUser,success:true});
         }
     } catch (error) {
-        res.status(409).json({message:error.message});
+        res.status(409).json({message:error.message,success:false});
     }
 }
 
@@ -86,12 +85,19 @@ export const loginUser=async(req,res)=>{
         //compare password;
         const check=await Registers.findOne({email:req.body.email});
         const comparePass= bcrypt.compareSync(req.body.password,check.password);
+        const seceret_key="12345432gfdsdfge34r12#@@#$##fgrbvfetgdg";
         if(check && comparePass){
             console.log("user login sucess fully");
+            const token=jwt.sign(req.body.email,seceret_key);
+            res.cookie('jwtToken', token, {
+                maxAge: 86400 * 1000, // 24 hours (in milliseconds)
+                httpOnly: false, // Cookie is only accessible via HTTP(S)
+            });
+
             res.status(200).json({message:"user login successfully",success:true})
         }
         else{
-            res.json({message:"usernot logging",success:false}) 
+            res.status(404).json({message:"user not logging",success:false}) 
             console.log("user not login");
         }
     } catch (error) {

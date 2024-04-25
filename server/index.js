@@ -4,11 +4,13 @@ import dotenv from 'dotenv';
 import Routes from './routes/route.js';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 const app=express();
 const PORT=8000;
 dotenv.config();
 
 app.use(cors());
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use('/',Routes);
