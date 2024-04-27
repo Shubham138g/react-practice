@@ -3,6 +3,7 @@ import Registers from '../schema/registerUser.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+
 export const addUser =async (req, res) => {
     const user = req.body;
     const newUser = new User(user);
@@ -29,7 +30,7 @@ export const registerUser1=async(req,res)=>{
             //hash password
             const hashPassword=await bcrypt.hash(password,10);
             rUser.password=hashPassword;
-            
+      
             const rNewUser=new Registers(rUser);
             await rNewUser.save();
             res.status(201).json({rNewUser,success:true});
@@ -87,7 +88,7 @@ export const loginUser=async(req,res)=>{
         const comparePass= bcrypt.compareSync(req.body.password,check.password);
         const seceret_key="12345432gfdsdfge34r12#@@#$##fgrbvfetgdg";
         if(check && comparePass){
-            console.log("user login sucess fully");
+            // console.log("user login sucess fully");
             const token=jwt.sign(req.body.email,seceret_key);
             res.cookie('jwtToken', token, {
                 maxAge: 86400 * 1000, // 24 hours (in milliseconds)
