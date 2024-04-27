@@ -6,7 +6,8 @@ const  registerUserSchema=mongoose.Schema({
     email:String,
     username:String,
     phone:String,
-    password:String
+    password:String,
+    token:String
 })
 
 const registers=mongoose.model("register",registerUserSchema);

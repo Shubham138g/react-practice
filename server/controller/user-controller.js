@@ -9,8 +9,11 @@ export const addUser =async (req, res) => {
     const newUser = new User(user);
 
     try {
-     await  newUser.save();
-     res.status(201).json(newUser);
+        if(req.cookies.jwt){
+            const verify=jwt.verify(req.cookies.jwt,"12345432gfdsdfge34r12#@@#$##fgrbvfetgdg")
+        }
+        await  newUser.save();
+        res.status(201).json(newUser);
     } catch (error) {
         res.status(409).json({message:error.message});
     }
@@ -30,10 +33,19 @@ export const registerUser1=async(req,res)=>{
             //hash password
             const hashPassword=await bcrypt.hash(password,10);
             rUser.password=hashPassword;
-      
-            const rNewUser=new Registers(rUser);
+            
+            //token
+            const seceret_key="12345432gfdsdfge34r12#@@#$##fgrbvfetgdg";
+            const token = jwt.sign({ username: rUser.username }, seceret_key);
+            res.cookie('jwt',token, {
+                maxAge: 600000,
+                httpOnly: true,
+            });
+            //save user and token
+            // const rNewUser=new Registers({...rUser,token});
+            const rNewUser = new Registers({ ...rUser, token });
             await rNewUser.save();
-            res.status(201).json({rNewUser,success:true});
+            res.status(201).json({user:rNewUser,token,  success:true});
         }
     } catch (error) {
         res.status(409).json({message:error.message,success:false});
@@ -86,15 +98,15 @@ export const loginUser=async(req,res)=>{
         //compare password;
         const check=await Registers.findOne({email:req.body.email});
         const comparePass= bcrypt.compareSync(req.body.password,check.password);
-        const seceret_key="12345432gfdsdfge34r12#@@#$##fgrbvfetgdg";
+        
         if(check && comparePass){
             // console.log("user login sucess fully");
-            const token=jwt.sign(req.body.email,seceret_key);
-            res.cookie('jwtToken', token, {
-                maxAge: 86400 * 1000, // 24 hours (in milliseconds)
-                httpOnly: false, // Cookie is only accessible via HTTP(S)
+            
+            res.cookie('jwt',check.token, {
+                maxAge: 600000,
+                httpOnly: true
             });
-
+            console.log(check.token);
             res.status(200).json({message:"user login successfully",success:true})
         }
         else{

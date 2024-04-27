@@ -9,6 +9,7 @@ const app=express();
 const PORT=8000;
 dotenv.config();
 
+//middlewears
 app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json());
