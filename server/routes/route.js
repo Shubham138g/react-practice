@@ -1,8 +1,9 @@
 import express from 'express';
 import {addUser,getUser,deleteUser,getUsers,editUser, registerUser1,loginUser} from '../controller/user-controller.js';
+import {verifyToken} from '../middleware/protectRoute.js';
 const router=express.Router();
 
-router.post('/add',addUser)
+router.post('/add',verifyToken,addUser)
 router.get('/all',getUsers)
 router.get('/:id',getUser)
 router.delete('/:id',deleteUser)

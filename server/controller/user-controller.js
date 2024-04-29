@@ -9,9 +9,9 @@ export const addUser =async (req, res) => {
     const newUser = new User(user);
 
     try {
-        if(req.cookies.jwt){
-            const verify=jwt.verify(req.cookies.jwt,"12345432gfdsdfge34r12#@@#$##fgrbvfetgdg")
-        }
+        // if(req.cookies.jwt){
+        //     const verify=jwt.verify(req.cookies.jwt,"12345432gfdsdfge34r12#@@#$##fgrbvfetgdg")
+        // }
         await  newUser.save();
         res.status(201).json(newUser);
     } catch (error) {
@@ -100,18 +100,21 @@ export const loginUser=async(req,res)=>{
         const comparePass= bcrypt.compareSync(req.body.password,check.password);
         
         if(check && comparePass){
-            // console.log("user login sucess fully");
-            
-            res.cookie('jwt',check.token, {
-                maxAge: 600000,
-                httpOnly: true
-            });
-            console.log(check.token);
-            res.status(200).json({message:"user login successfully",success:true})
+            console.log("user login sucess fully");
+            const seceret_key="12345432gfdsdfge34r12#@@#$##fgrbvfetgdg";
+            const userID=check._id;
+            const token = jwt.sign({  userID }, seceret_key);
+            console.log(token);
+            res.cookie("token",token,{
+                httpOnly:ture,
+                maxAge:15 * 24 * 60 * 60 * 1000,
+                samSite:"strict",
+            })
+           return res.status(200).json({message:"user login successfully",success:true,token:token})
         }
         else{
-            res.status(404).json({message:"user not logging",success:false}) 
             console.log("user not login");
+           return res.status(404).json({message:"user not logging",success:false}) 
         }
     } catch (error) {
         res.status(404).json({message:error.message,message:"user not found",success:false})
