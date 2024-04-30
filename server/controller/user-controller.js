@@ -104,13 +104,9 @@ export const loginUser=async(req,res)=>{
             const seceret_key="12345432gfdsdfge34r12#@@#$##fgrbvfetgdg";
             const userID=check._id;
             const token = jwt.sign({  userID }, seceret_key);
-            console.log(token);
-            res.cookie("token",token,{
-                httpOnly:ture,
-                maxAge:15 * 24 * 60 * 60 * 1000,
-                samSite:"strict",
-            })
-           return res.status(200).json({message:"user login successfully",success:true,token:token})
+            // console.log(token);
+       
+           return res.status(200).json({message:"user login successfully",success:true,token})
         }
         else{
             console.log("user not login");

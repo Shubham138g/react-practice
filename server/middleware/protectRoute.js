@@ -1,7 +1,7 @@
 // Middleware to verify token in session
 export const verifyToken = (req, res, next) => {
-    // const token = sessionStorage.getItem(token);
-    const token=req.cookies.token;
+    
+    const token = req.headers['authorization'];
     console.log(token);
 
     if (!token) {
@@ -10,7 +10,7 @@ export const verifyToken = (req, res, next) => {
 
     try {
         // Verify token
-        const decoded = jwt.verify(token,"12345432gfdsdfge34r12#@@#$##fgrbvfetgdg");
+        const decoded = jwt.verify(token,"12345432gfdsdfge34r12#@@#$##fgrbvfetgdg", { algorithms: ['HS256'] });
         console.log(decoded);
         // Attach user information to request object
         req.user = decoded;
@@ -20,8 +20,3 @@ export const verifyToken = (req, res, next) => {
     }
 };
 
-// Protected route
-// app.get('/protected', verifyToken, (req, res) => {
-//     // Only authenticated users can access this route
-//     res.json({ message: "Protected route accessed", user: req.user });
-// });
